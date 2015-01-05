@@ -153,6 +153,7 @@ typedef struct s_symbol {
   int numrefers;        /* number of entries in the referrer list */
   char *documentation;  /* optional documentation string */
   methodmap_t *methodmap; /* if ident == iMETHODMAP */
+  int funcid;           /* set for functions during codegen */
 } symbol;
 
 /*  Possible entries for "ident". These are used in the "symbol", "value"
@@ -765,6 +766,7 @@ void invoke_setter(struct methodmap_method_s *method, int save);
 void inc_pri();
 void dec_pri();
 void load_hidden_arg();
+void load_glbfn(symbol *sym);
 
 /*  Code generation functions for arithmetic operators.
  *

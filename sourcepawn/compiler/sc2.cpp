@@ -3103,6 +3103,7 @@ symbol *addsym(const char *name,cell addr,int ident,int vclass,int tag,int usage
   entry.lnumber=fline;
   entry.numrefers=1;
   entry.refer=refer;
+  entry.funcid=0;
 
   /* then insert it in the list */
   if (vclass==sGLOBAL)

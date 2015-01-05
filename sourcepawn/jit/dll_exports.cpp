@@ -100,7 +100,7 @@ public:
 		while (error->GetTraceInfo(&stk_info))
 		{
 			fprintf(stderr,
-			    "   [%d]  Line %d, %s::%s()\n",
+				"   [%d]  Line %d, %s::%s()\n",
 				i++,
 				stk_info.line,
 				stk_info.filename,
@@ -171,6 +171,20 @@ static cell_t PrintFloat(IPluginContext *cx, const cell_t *params)
 	return printf("%f\n", sp_ctof(params[1]));
 }
 
+static cell_t DoCall(IPluginContext *cx, const cell_t *params)
+{
+	IPluginFunction *fun = cx->GetFunctionById(params[1]);
+	if (!fun)
+		return cx->ThrowNativeError("invalid function id: %x\n", params[0]);
+
+	cell_t rval;
+	int err = fun->Execute(&rval);
+	if (err != SP_ERROR_NONE)
+		return cx->ThrowNativeError("encountered error in call");
+
+	return rval;
+}
+
 static int Execute(const char *file)
 {
 	ICompilation *co = g_engine2.StartCompilation();
@@ -191,6 +205,7 @@ static int Execute(const char *file)
 	BindNative(rt, "printnums", PrintNums);
 	BindNative(rt, "printfloat", PrintFloat);
 	BindNative(rt, "donothing", DoNothing);
+	BindNative(rt, "docall", DoCall);
 
 	IPluginFunction *fun = rt->GetFunctionByName("main");
 	if (!fun)
